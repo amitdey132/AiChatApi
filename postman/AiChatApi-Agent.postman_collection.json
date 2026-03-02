@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "AiChatApi - Agent",
+    "_postman_id": "a1b2c3d4-0000-4000-8000-000000000001",
+    "description": "Postman collection to call the Agent endpoint (POST /api/agent/chat). Set environment and HF_API_KEY as needed.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Agent - Chat",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlation_id}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"{{sessionId}}\",\n  \"message\": \"{{message}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/agent/chat",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "agent",
+            "chat"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// generate a new correlation id for each request",
+              "pm.environment.set('correlation_id', pm.variables.replaceIn('{{$guid}}'));"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Log response body and correlation id",
+              "console.log('Agent response:', pm.response.text());",
+              "console.log('X-Correlation-ID:', pm.response.headers.get('X-Correlation-ID'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}
